@@ -1,23 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import Header from "./components/Header";
+import NoteTakingArea from "./components/NoteTakingArea";
+import Notes from "./components/Notes";
+import CountNotes from "./components/CountNotes";
+import Footer from "./components/Footer";
 
-function App() {
+function App(props) {
+  const [notes, setNotes] = useState([]);
+
+  const addNote = (newNote) => {
+    setNotes((prev) => {
+      return [...prev, newNote];
+    });
+  };
+
+  const deleteNotes = (id) => {
+    setNotes((prev) => {
+      return [...prev.filter((note, i) => i !== id)];
+    });
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      <CountNotes
+        count={
+          notes.length === 0
+            ? "Add your note!"
+            : `Showing ${notes.length} note from Database!`
+        }
+      />
+      <NoteTakingArea onAdd={addNote} />
+      {notes.map((note, i) => (
+        <Notes
+          key={i}
+          id={i}
+          title={note.title}
+          content={note.content}
+          onDelete={deleteNotes}
+        />
+      ))}
+      <Footer />
     </div>
   );
 }
